@@ -1,5 +1,7 @@
 package com.example.myfavplaces
 
+import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -7,9 +9,12 @@ import android.os.Bundle
 import android.service.controls.actions.FloatAction
 import android.util.Log
 import android.view.LayoutInflater
+import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 data class Place(val title:String,val description:String,val latitude:Double,val longitude:Double):java.io.Serializable
@@ -21,6 +26,9 @@ private val TAG="MainActivity"
 private val REQUEST_CODE=1234
 public val MAP_TITLE = "com.example.myfavplaces.MAP_TITLE"
 
+private var datasource = mutableListOf<userplace>()
+lateinit var mapAdapter:Maps_custom_adapter
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,12 +36,11 @@ class MainActivity : AppCompatActivity() {
 
         val rvid = findViewById<RecyclerView>(R.id.rvid)
 
-        //val datasource = mutableListOf<userplace>()
-        val datasource = generateSampleData()
+        datasource = generateSampleData().toMutableList()
 
         rvid.layoutManager = LinearLayoutManager(this)
 
-        rvid.adapter = Maps_custom_adapter(this,datasource,object:Maps_custom_adapter.onClickListener{
+        mapAdapter = Maps_custom_adapter(this,datasource,object:Maps_custom_adapter.onClickListener{
             override fun onClick(position:Int) {
                 val intent = Intent(this@MainActivity,DisplayMapsActivity::class.java)
                 intent.putExtra(MAPS_EXTRA,datasource[position])
@@ -41,16 +48,47 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        rvid.adapter= mapAdapter
+
         //when user clicked we want to move to new activity
         val fav_add_button = findViewById<FloatingActionButton>(R.id.fav_add_button)
         fav_add_button.setOnClickListener {
             Log.i(TAG,"Action Button Clicked!")
+            favButtonTask()
+        }
+    }
+
+    private fun favButtonTask(){
+        val view = LayoutInflater.from(this).inflate(R.layout.dailogue_add_title,null)
+        val dailogue = AlertDialog.Builder(this)
+            .setTitle("Create a Title")
+            .setView(view)
+            .setPositiveButton("OK",null)
+            .setNegativeButton("Cancel",null)
+            .show()
+
+        dailogue.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+            val titletext:String = view.findViewById<EditText>(R.id.titleid).text.trim().toString()
+            if(titletext==""){
+                Toast.makeText(this, "Please fill the title to proceed", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            dailogue.dismiss()
             val intent = Intent(this@MainActivity,CreateMapsActivity::class.java)
 
-            intent.putExtra(MAP_TITLE,"this is a new map")
-            //startActivityForResult(intent,REQUEST_CODE)
-            startActivity(intent)
+            intent.putExtra(MAP_TITLE,titletext)
+            startActivityForResult(intent,REQUEST_CODE)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode== REQUEST_CODE && resultCode== Activity.RESULT_OK){
+            Log.i(TAG,"Got data back from user")
+            val cuserplace = data?.getSerializableExtra(MAPS_EXTRA) as userplace
+            datasource.add(cuserplace)
+            mapAdapter.notifyItemInserted(datasource.size-1)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun generateSampleData(): List<userplace> {

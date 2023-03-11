@@ -1,10 +1,14 @@
 package com.example.myfavplaces
 
+import android.app.Activity
 import android.content.DialogInterface
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View.OnLongClickListener
 import android.widget.EditText
 import android.widget.Toast
@@ -44,6 +48,34 @@ class CreateMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_create_map,menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        //check if the item clicked is equal to menu
+        if(item.itemId == R.id.saveid){
+            Log.i(TAG,"Tapped On Save !!")
+            if(allMarkers.isEmpty()){
+                Toast.makeText(this, "Add atleast one marker to save.", Toast.LENGTH_SHORT).show()
+                return true
+            }
+
+            //else we will return the nwe userplace to main activity
+            //before that we need to convert list of mutable markers to list of place that
+            val cPlaces = allMarkers.map { marker -> Place(marker.title!!,marker.snippet!!,marker.position.latitude,marker.position.longitude) }
+            val cuserplace = userplace(intent.getStringExtra(MAP_TITLE).toString(),cPlaces)
+
+            val data = Intent()
+            data.putExtra(MAPS_EXTRA,cuserplace)
+            setResult(Activity.RESULT_OK,data)
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -55,6 +87,11 @@ class CreateMapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+
+        //change the view to delhi
+        val delhi = LatLng(28.7,77.1)
+        // mMap.moveCamera(CameraUpdateFactory.newLatLng(delhi))  but this is not zooming in to zoom into longer
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(delhi,5f))
 
         mMap.setOnInfoWindowClickListener {markertodelete->
             Log.i(TAG,"Marker removed called")
@@ -85,10 +122,7 @@ class CreateMapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 return@setOnClickListener
             }
             dailogue.dismiss()
-            val cmarker = mMap.addMarker(
-                MarkerOptions().position(clickedposition).title(titletext)
-                    .snippet(descriptiontext)
-            )
+            val cmarker = mMap.addMarker(MarkerOptions().position(clickedposition).title(titletext).snippet(descriptiontext))
             allMarkers.add(cmarker!!)
         }
     }
