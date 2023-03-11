@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this@MainActivity, DisplayMapsActivity::class.java)
                     intent.putExtra(MAPS_EXTRA, datasource[position])
                     startActivity(intent)
+                    overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right)
                 }
             })
 

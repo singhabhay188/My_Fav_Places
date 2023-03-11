@@ -15,7 +15,7 @@ class Maps_custom_adapter(val context: MainActivity, val datasource: List<userpl
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        var view = LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_1,parent,false)
+        var view = LayoutInflater.from(parent.context).inflate(R.layout.item_view_recycler_view,parent,false)
         return ViewHolder(view)
     }
 
@@ -35,6 +35,6 @@ class Maps_custom_adapter(val context: MainActivity, val datasource: List<userpl
     }
 
     inner class ViewHolder(itemview: View):RecyclerView.ViewHolder(itemview){
-        var textid = itemview.findViewById<TextView>(android.R.id.text1)
+        var textid = itemview.findViewById<TextView>(R.id.text1)
     }
 }
