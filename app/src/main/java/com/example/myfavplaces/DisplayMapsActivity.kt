@@ -12,12 +12,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.example.myfavplaces.databinding.ActivityDisplayMapsBinding
 
 class DisplayMapsActivity : AppCompatActivity(), OnMapReadyCallback {
-
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityDisplayMapsBinding
     private lateinit var usermap:userplace
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

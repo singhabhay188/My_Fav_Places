@@ -23,10 +23,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.example.myfavplaces.databinding.ActivityCreateMapsBinding
 import com.google.android.gms.maps.model.Marker
 
+
 private val TAG:String = "CreateMapsActivity"
-
 public val allMarkers:MutableList<Marker> = mutableListOf<Marker>()
-
 class CreateMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
@@ -92,6 +91,8 @@ class CreateMapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val delhi = LatLng(28.7,77.1)
         // mMap.moveCamera(CameraUpdateFactory.newLatLng(delhi))  but this is not zooming in to zoom into longer
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(delhi,5f))
+
+        allMarkers.clear()
 
         mMap.setOnInfoWindowClickListener {markertodelete->
             Log.i(TAG,"Marker removed called")
