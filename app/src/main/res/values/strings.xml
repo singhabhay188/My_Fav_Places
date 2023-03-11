@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">My Fav Places</string>
+    <string name="title_activity_display_maps">DisplayMapsActivity</string>
+    <string name="title_activity_create_maps">CreateMapsActivity</string>
+</resources>
