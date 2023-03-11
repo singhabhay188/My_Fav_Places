@@ -21,12 +21,14 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.myfavplaces.databinding.ActivityCreateMapsBinding
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.Marker
 
 
 private val TAG:String = "CreateMapsActivity"
 public val allMarkers:MutableList<Marker> = mutableListOf<Marker>()
-class CreateMapsActivity : AppCompatActivity(), OnMapReadyCallback {
+
+class CreateMapsActivity : AppCompatActivity(), OnMapReadyCallback{
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityCreateMapsBinding
