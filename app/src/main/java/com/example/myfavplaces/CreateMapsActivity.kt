@@ -89,7 +89,7 @@ class CreateMapsActivity : AppCompatActivity(), OnMapReadyCallback{
         //change the view to delhi
         val delhi = LatLng(28.7,77.1)
         // mMap.moveCamera(CameraUpdateFactory.newLatLng(delhi))  but this is not zooming in to zoom into longer
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(delhi,5f))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(delhi,8f))
 
         allMarkers.clear()
 

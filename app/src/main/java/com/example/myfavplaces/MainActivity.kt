@@ -1,13 +1,10 @@
 package com.example.myfavplaces
-
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.service.controls.actions.FloatAction
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.EditText
@@ -15,13 +12,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.ObjectInputStream
-import java.io.ObjectOutput
 import java.io.ObjectOutputStream
 
 data class Place(val title:String,val description:String,val latitude:Double,val longitude:Double):java.io.Serializable
@@ -33,7 +28,6 @@ private val TAG="MainActivity"
 private val REQUEST_CODE=1234
 public val MAP_TITLE = "com.example.myfavplaces.MAP_TITLE"
 private const val FILE_NAME = "com.example.myfavplaces.userplace.data"
-
 private var datasource = mutableListOf<userplace>()
 lateinit var mapAdapter:Maps_custom_adapter
 
@@ -58,6 +52,20 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                     overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right)
                 }
+
+                override fun onlongClick(position: Int) {
+                    //delete the element at current position but before that display a dailog to confirm it
+                    val dailog = AlertDialog.Builder(this@MainActivity)
+                        .setMessage("Are you sure to Delete this Entry")
+                        .setPositiveButton("OK",null)
+                        .setNegativeButton("Cancel",null).show()
+
+                    //if ok clicked delete the currenty entry position
+                    dailog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+                        removeElement(position)
+                        dailog.dismiss()
+                    }
+                }
             })
 
         rvid.adapter = mapAdapter
@@ -68,6 +76,14 @@ class MainActivity : AppCompatActivity() {
             Log.i(TAG, "Action Button Clicked!")
             favButtonTask()
         }
+    }
+
+    private fun removeElement(position: Int) {
+        datasource.removeAt(position)
+        //notify the adapter that a element is deleted
+        mapAdapter.notifyItemRemoved(position)
+        //also serialize this in the data stored on phone
+        serializeUserPlaces(this, datasource)
     }
 
     private fun favButtonTask() {

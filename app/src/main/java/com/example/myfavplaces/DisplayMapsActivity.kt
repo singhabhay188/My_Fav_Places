@@ -47,7 +47,7 @@ class DisplayMapsActivity : AppCompatActivity(), OnMapReadyCallback {
         for(place in  usermap.places){
             val x = LatLng(place.latitude, place.longitude)
             mMap.addMarker(MarkerOptions().position(x).title(place.title).snippet(place.description))
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(x,5f))
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(x,7f))
         }
     }
 }
