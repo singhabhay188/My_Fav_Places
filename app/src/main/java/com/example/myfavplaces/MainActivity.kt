@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
                 override fun onlongClick(position: Int) {
                     //delete the element at current position but before that display a dailog to confirm it
                     val dailog = AlertDialog.Builder(this@MainActivity)
-                        .setMessage("Are you sure to Delete this Entry")
+                        .setMessage("Are you sure to Delete ${datasource.get(position).heading}")
                         .setPositiveButton("OK",null)
                         .setNegativeButton("Cancel",null).show()
 
